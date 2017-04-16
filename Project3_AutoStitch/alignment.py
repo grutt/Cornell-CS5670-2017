@@ -42,7 +42,15 @@ def computeHomography(f1, f2, matches, A_out=None):
         #Fill in the matrix A in this loop.
         #Access elements using square brackets. e.g. A[0,0]
         #TODO-BLOCK-BEGIN
-        raise Exception("TODO in alignment.py not implemented")
+        # ax  ay  1   0   0   0  -ax*bx  - ay*bx  -bx
+        # 0   0   0   ax  ay  1  -ax*by  - ax*by  -by
+        # See slide 7 of homework notes
+
+        A[2*i, :3] = [a_x, a_y, 1]
+        A[2*i, -3:] = [-a_x*b_x, - a_y*b_x, -b_x]
+
+        A[2*i+1, 3:6] = [a_x, a_y, 1]
+        A[2*i+1, -3:] = [-a_x*b_y, - a_y*b_y, -b_y]
         #TODO-BLOCK-END
         #END TODO
 
@@ -62,7 +70,14 @@ def computeHomography(f1, f2, matches, A_out=None):
     #BEGIN TODO 3
     #Fill the homography H with the appropriate elements of the SVD
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in alignment.py not implemented")
+
+    c=0
+    for i in range(3):
+        for j in range(3):
+            H[i,j]= v[c,8]
+            c+=1
+    H = H/v[8,8]
+
     #TODO-BLOCK-END
     #END TODO
 
@@ -206,4 +221,3 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
         raise Exception("Error: Invalid motion model.")
 
     return M
-
