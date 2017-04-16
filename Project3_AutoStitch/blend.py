@@ -66,7 +66,8 @@ def accumulateBlend(img, acc, M, blendWidth):
     # BEGIN TODO 10
     # Fill in this routine
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in blend.py not implemented")
+
+    #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
     # END TODO
 
@@ -108,7 +109,8 @@ def getAccSize(ipv):
         # BEGIN TODO 9
         # add some code here to update minX, ..., maxY
         #TODO-BLOCK-BEGIN
-        raise Exception("TODO in blend.py not implemented")
+        minX, minY, maxX, maxY = imageBoundingBox(img, M)
+        #raise Exception("TODO in blend.py not implemented")
         #TODO-BLOCK-END
         # END TODO
 
