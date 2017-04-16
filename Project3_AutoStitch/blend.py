@@ -72,8 +72,10 @@ def accumulateBlend(img, acc, M, blendWidth):
        img, M, (acc.shape[1], acc.shape[0]), flags=cv2.INTER_LINEAR
     )
 
+    mask = np.sum(img, axis=2) > 0
 
-    acc += np.dstack((img, np.ones(img.shape[0:2])))
+
+    acc += np.dstack((img, mask))
 
 
     #raise Exception("TODO in blend.py not implemented")
