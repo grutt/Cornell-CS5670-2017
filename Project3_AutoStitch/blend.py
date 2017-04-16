@@ -36,9 +36,10 @@ def imageBoundingBox(img, M):
     y_ = []
     for i in x:
         for j in y:
-            p = np.array([i,j,1]) * M
-            x_.push(p[0]/p[2])
-            y_.push(p[1]/p[2])
+            p = np.dot(M, np.array([i,j,1.]))
+            p = np.divide(p, p[2])
+            x_.push(p[0])
+            y_.push(p[1])
 
     x_ = np.array(x_)
     y_ = np.array(y_)
