@@ -119,20 +119,23 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
     #least_squares_fit.
     #TODO-BLOCK-BEGIN
     #raise Exception("TODO in alignment.py not implemented")
-    for i in range(mRANSAC):
-        if (m == eTranslation):
+    for i in range(nRANSAC):
+        if (m == eTranslate):
             sample = np.random.random_integers(0, len(f1)-1, 1)[0]
-            (xDiff, yDiff) = f2[0].pt - f1[0].pt
+            xDiff, yDiff = f2[sample].pt[0] - f1[sample].pt[0], f2[sample].pt[1] - f1[sample].pt[1]
             matrix = np.eye(3)
-            matrix[0,2] = -xDiff
-            matrix[1,2] = -yDiff
+            matrix[0,2], matrix[1,2] = -xDiff, -yDiff
         elif (m == eHomography):
-            sample = numpy.randomsample(0, len(f1)-1, 4)
-            matrix = computeHomography(f1, f2, matches)
+            samples = np.random.random_integers(0, len(f1)-1, 4)
+            subF1, subF2 = [], []
+            for pos in samples:
+                subF1.append(f1[pos])
+                subF2.append(f2[pos])
+            matrix = computeHomography(subF1, subF2, matches)
         temp_inlier = getInliers(f1, f2, matches, matrix, RANSACthresh)
         if len(temp_inlier) > len(inlier_indices):
             inlier_indices = temp_inlier
-            
+
     M = leastSquaresFit(f1, f2, matches, m, inlier_indices)
 
 
