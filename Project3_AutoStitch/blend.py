@@ -73,10 +73,7 @@ def accumulateBlend(img, acc, M, blendWidth):
     )
 
     mask = np.sum(img, axis=2) > 0
-
-
     acc += np.dstack((img, mask))
-
 
     #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
@@ -102,6 +99,7 @@ def normalizeBlend(acc):
             else:
                 img[i, j, :] /= acc[i, j, 3]
 
+    img = img.astype(np.uint8) # FIXME ensure all < 255
     #TODO-BLOCK-END
     # END TODO
     return img
@@ -213,12 +211,6 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     acc = pasteImages(
         ipv, translation, blendWidth, accWidth, accHeight, channels
     )
-
-    # FIXME
-    compImage = normalizeBlend(acc)
-    print(compImage.max())
-    compImage = compImage.astype(np.uint8)
-
 
 
     # Determine the final image width
