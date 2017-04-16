@@ -67,13 +67,12 @@ def accumulateBlend(img, acc, M, blendWidth):
     # Fill in this routine
     #TODO-BLOCK-BEGIN
 
-    minX, minY, maxX, maxY = imageBoundingBox(img, M)
-
+    M_inv = np.linalg.inv(M)
     img = cv2.warpPerspective(
-       img, M, (maxX, maxY), flags=cv2.INTER_LINEAR
+       img, M, (acc.shape[1], acc.shape[0]), flags=cv2.INTER_LINEAR
     )
-    print(type(acc))
-    acc = np.dstack((img, np.ones(img.shape[0:2])))
+
+    acc += np.dstack((img, np.ones(img.shape[0:2])))
 
 
     #raise Exception("TODO in blend.py not implemented")
@@ -99,6 +98,7 @@ def normalizeBlend(acc):
                 img[i, j, :] = 0
             else:
                 img[i, j, :] /= acc[i, j, 3]
+
     #TODO-BLOCK-END
     # END TODO
     return img
@@ -211,7 +211,13 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     acc = pasteImages(
         ipv, translation, blendWidth, accWidth, accHeight, channels
     )
+
+    # FIXME
     compImage = normalizeBlend(acc)
+    print(compImage.max())
+    compImage = compImage.astype(np.uint8)
+
+
 
     # Determine the final image width
     outputWidth = (accWidth - width) if is360 else accWidth
@@ -227,7 +233,8 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     # Note: warpPerspective does forward mapping which means A is an affine
     # transform that maps accumulator coordinates to final panorama coordinates
     #TODO-BLOCK-BEGIN
-    A = computeDrift(x_init, y_init, x_final, y_final, outputWidth)
+    if(is360):
+        A = computeDrift(x_init, y_init, x_final, y_final, outputWidth)
 
 
     #TODO-BLOCK-END
