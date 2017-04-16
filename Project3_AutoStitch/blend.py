@@ -66,6 +66,7 @@ def accumulateBlend(img, acc, M, blendWidth):
     # BEGIN TODO 10
     # Fill in this routine
     #TODO-BLOCK-BEGIN
+
     M_inv = numpy.linalg.inv(M)
     imageBoundingBox(img, M_inv)
     for x in img.shape[0]:
@@ -79,6 +80,7 @@ def accumulateBlend(img, acc, M, blendWidth):
     print(type(acc))
     print(acc.shape)
     print(blendWidth)
+
     #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
     # END TODO
@@ -95,7 +97,13 @@ def normalizeBlend(acc):
     # BEGIN TODO 11
     # fill in this routine..
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in blend.py not implemented")
+    img = acc[:, :, 0:3].copy()
+    for i in range(acc.shape[0]):
+        for j in range(acc.shape[1]):
+            if acc[i, j, 3] == 0:
+                img[i, j, :] = 0
+            else:
+                img[i, j, :] /= acc[i, j, 3]
     #TODO-BLOCK-END
     # END TODO
     return img
@@ -225,7 +233,9 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     # Note: warpPerspective does forward mapping which means A is an affine
     # transform that maps accumulator coordinates to final panorama coordinates
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in blend.py not implemented")
+    A = computeDrift(x_init, y_init, x_final, y_final, outputWidth)
+
+
     #TODO-BLOCK-END
     # END TODO
 
