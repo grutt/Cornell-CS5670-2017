@@ -170,7 +170,14 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         #by M, is within RANSACthresh of its match in f2.
         #If so, append i to inliers
         #TODO-BLOCK-BEGIN
-        raise Exception("TODO in alignment.py not implemented")
+        match = matches[i]
+        t1 = f1[match.queryIdx].pt * M  # FIXME check if we need to normalize by z
+        t2 = f2[match.queryIdx].pt
+
+        dist = np.linalg.norm(t1-t2)  # euclidean dist
+
+        if(dist < RANSACthresh):
+            inlier_indices.append(i)
         #TODO-BLOCK-END
         #END TODO
 
@@ -215,7 +222,13 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
             #Use this loop to compute the average translation vector
             #over all inliers.
             #TODO-BLOCK-BEGIN
-            raise Exception("TODO in alignment.py not implemented")
+            match = matches[i]
+            t1_x, t1_y = f1[match.queryIdx].pt
+            t2_x, t1_y = f2[match.queryIdx].pt
+
+            u += t1_x - t2_y # FIXME left or right???
+            v += t1_y - t2_y
+
             #TODO-BLOCK-END
             #END TODO
 
@@ -230,7 +243,8 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
         #Compute a homography M using all inliers.
         #This should call computeHomography.
         #TODO-BLOCK-BEGIN
-        raise Exception("TODO in alignment.py not implemented")
+        matchSubset = [matches[i] for i in range(len(inlier_indices))]
+        M = computeHomography(f1, f2, matchSubset)
         #TODO-BLOCK-END
         #END TODO
 
