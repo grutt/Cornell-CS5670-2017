@@ -36,9 +36,9 @@ def imageBoundingBox(img, M):
     y_ = []
     for i in x:
         for j in y:
-            p = np.array([i,j]) * M
-            x_.push(p[0])
-            y_.push(p[1])
+            p = np.array([i,j,1]) * M
+            x_.push(p[0]/p[2])
+            y_.push(p[1]/p[2])
 
     x_ = np.array(x_)
     y_ = np.array(y_)
@@ -88,6 +88,10 @@ def normalizeBlend(acc):
 
 
 def getAccSize(ipv):
+    """
+       INPUT:
+         ipv: list of input images and their relative positions in the mosaic
+    """
     # Compute bounding box for the mosaic
     minX = sys.maxint
     minY = sys.maxint
@@ -107,7 +111,15 @@ def getAccSize(ipv):
         # BEGIN TODO 9
         # add some code here to update minX, ..., maxY
         #TODO-BLOCK-BEGIN
-        raise Exception("TODO in blend.py not implemented")
+        bound = imageBoundingBox(img, M)
+        #return int(minX), int(minY), int(maxX), int(maxY)
+
+        minX = min(minX, bound[0])
+        maxX = min(maxX, bound[2])
+
+        minY = min(minY, bound[1])
+        maxY = min(maxY, bound[3])
+
         #TODO-BLOCK-END
         # END TODO
 
