@@ -67,19 +67,14 @@ def accumulateBlend(img, acc, M, blendWidth):
     # Fill in this routine
     #TODO-BLOCK-BEGIN
 
-    M_inv = numpy.linalg.inv(M)
-    imageBoundingBox(img, M_inv)
-    for x in img.shape[0]:
-        for y in img.shape[1]:
-            transformed = np.dot(M_inv, np.array([x, y, 1]))
-            transformed = np.divide(transformed, transformed[2])
+    minX, minY, maxX, maxY = imageBoundingBox(img, M)
 
-
-    print(type(img))
-    print(img.shape)
+    img = cv2.warpPerspective(
+       img, M, (maxX, maxY), flags=cv2.INTER_LINEAR
+    )
     print(type(acc))
-    print(acc.shape)
-    print(blendWidth)
+    acc = np.dstack((img, np.ones(img.shape[0:2])))
+
 
     #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
@@ -133,15 +128,16 @@ def getAccSize(ipv):
         # BEGIN TODO 9
         # add some code here to update minX, ..., maxY
         #TODO-BLOCK-BEGIN
-        bound = imageBoundingBox(img, M)
+        M_inv = np.linalg.inv(M)
+        bound = imageBoundingBox(img, M_inv)
         #return int(minX), int(minY), int(maxX), int(maxY)
 
         minX = min(minX, bound[0])
-        maxX = min(maxX, bound[2])
+        maxX = max(maxX, bound[2])
 
         minY = min(minY, bound[1])
-        maxY = min(maxY, bound[3])
-
+        maxY = max(maxY, bound[3])
+        print("WOOO", minX, minY, maxX, maxY)
         #TODO-BLOCK-END
         # END TODO
 
