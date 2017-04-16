@@ -32,8 +32,8 @@ def computeHomography(f1, f2, matches, A_out=None):
     num_cols = 9
     A_matrix_shape = (num_rows,num_cols)
     A = np.zeros(A_matrix_shape)
-
-    for i in range(len(matches)):
+    print(num_matches)
+    for i in range(num_matches):
         m = matches[i]
         (a_x, a_y) = f1[m.queryIdx].pt
         (b_x, b_y) = f2[m.trainIdx].pt
@@ -47,10 +47,10 @@ def computeHomography(f1, f2, matches, A_out=None):
         # See slide 7 of homework notes
 
         A[2*i, :3] = [a_x, a_y, 1]
-        A[2*i, -3:] = [-a_x*b_x, - a_y*b_x, -b_x]
+        A[2*i, 6:9] = [-a_x*b_x, - a_y*b_x, -b_x]
 
         A[2*i+1, 3:6] = [a_x, a_y, 1]
-        A[2*i+1, -3:] = [-a_x*b_y, - a_y*b_y, -b_y]
+        A[2*i+1, 6:9] = [-a_x*b_y, - a_y*b_y, -b_y]
         #TODO-BLOCK-END
         #END TODO
 
@@ -71,12 +71,7 @@ def computeHomography(f1, f2, matches, A_out=None):
     #Fill the homography H with the appropriate elements of the SVD
     #TODO-BLOCK-BEGIN
 
-    c=0
-    for i in range(3):
-        for j in range(3):
-            H[i,j]= Vt[c,8]
-            c+=1
-    H = H/Vt[8,8]
+    H = np.reshape(Vt[8], (3,3))
 
     #TODO-BLOCK-END
     #END TODO
@@ -128,14 +123,12 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
             matrix[0,2], matrix[1,2] = -xDiff, -yDiff
         elif (m == eHomography):
             samples = np.random.random_integers(0, len(matches)-1, 4)
-            subMatches = []
-            for pos in samples:
-                subMatches.append(matches[pos])
-
-            matrix = computeHomography(f1, f2, subMatches)
+            subMatches = [matches[pos] for pos in samples]
+            matrix = computeHomography(f1, f2, matches)
         temp_inlier = getInliers(f1, f2, matches, matrix, RANSACthresh)
         if len(temp_inlier) > len(inlier_indices):
             inlier_indices = temp_inlier
+    print(inlier_indices)
     M = leastSquaresFit(f1, f2, matches, m, inlier_indices)
 
 
@@ -174,20 +167,12 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         #If so, append i to inliers
         #TODO-BLOCK-BEGIN
         match = matches[i]
+        t1 = np.dot(M, np.append(f1[match.queryIdx].pt, 1))  # FIXME check if we need to normalize by z
+        t1 = np.divide(t1, t1[2])
+        t2 = np.append(f2[match.queryIdx].pt, 1)
 
-        f1[match.queryIdx].pt
-
-        t1 = np.ones(3)
-        t1[:2] = f1[match.queryIdx].pt
-
-        t1 = np.dot(M, t1)  # FIXME check if we need to normalize by z
-        t1 /= t1[2]
-
-
-        t2 = f2[match.queryIdx].pt
-
-        dist = np.linalg.norm(t1[:2]-t2)  # euclidean dist
-
+        dist = np.linalg.norm(t1-t2)  # euclidean dist
+        print("Dist:"+str(dist))
         if(dist < RANSACthresh):
             inlier_indices.append(i)
         #TODO-BLOCK-END
@@ -236,10 +221,10 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
             #TODO-BLOCK-BEGIN
             match = matches[i]
             t1_x, t1_y = f1[match.queryIdx].pt
-            t2_x, t1_y = f2[match.queryIdx].pt
+            t2_x, t2_y = f2[match.queryIdx].pt
 
-            u += t1_x - t2_y # FIXME left or right???
-            v += t1_y - t2_y
+            u += t2_x - t1_x # FIXME left or right???
+            v += t2_y - t1_y
 
             #TODO-BLOCK-END
             #END TODO
