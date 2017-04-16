@@ -29,7 +29,23 @@ def imageBoundingBox(img, M):
     """
     #TODO 8
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in blend.py not implemented")
+    x = [0, img.shape[0]]
+    y = [0, img.shape[1]]
+
+    x_ = []
+    y_ = []
+    for i in x:
+        for j in y:
+            p = np.array([i,j]) * M
+            x_.push(p[0])
+            y_.push(p[1])
+
+    x_ = np.array(x_)
+    y_ = np.array(y_)
+    minX = x_.min()
+    minY = y_.min()
+    maxX = x_.max()
+    maxY = y_.max()
     #TODO-BLOCK-END
     return int(minX), int(minY), int(maxX), int(maxY)
 
@@ -196,4 +212,3 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     )
 
     return croppedImage
-
