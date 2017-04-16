@@ -226,10 +226,7 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
         #Compute a homography M using all inliers.
         #This should call computeHomography.
         #TODO-BLOCK-BEGIN
-        matchSubset = []
-        for i in range(len(inlier_indices)):
-            matchSubset.append(matches[i])
-
+        matchSubset = [matches[i] for i in range(len(inlier_indices))]
         M = computeHomography(f1, f2, matchSubset)
         #TODO-BLOCK-END
         #END TODO
