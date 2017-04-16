@@ -32,7 +32,7 @@ def computeHomography(f1, f2, matches, A_out=None):
     num_cols = 9
     A_matrix_shape = (num_rows,num_cols)
     A = np.zeros(A_matrix_shape)
-    print(num_matches)
+    
     for i in range(num_matches):
         m = matches[i]
         (a_x, a_y) = f1[m.queryIdx].pt
@@ -128,7 +128,7 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
         temp_inlier = getInliers(f1, f2, matches, matrix, RANSACthresh)
         if len(temp_inlier) > len(inlier_indices):
             inlier_indices = temp_inlier
-    print(inlier_indices)
+
     M = leastSquaresFit(f1, f2, matches, m, inlier_indices)
 
 
@@ -172,7 +172,6 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         t2 = np.append(f2[match.queryIdx].pt, 1)
 
         dist = np.linalg.norm(t1-t2)  # euclidean dist
-        print("Dist:"+str(dist))
         if(dist < RANSACthresh):
             inlier_indices.append(i)
         #TODO-BLOCK-END
