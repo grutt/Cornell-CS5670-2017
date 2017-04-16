@@ -32,7 +32,7 @@ def computeHomography(f1, f2, matches, A_out=None):
     num_cols = 9
     A_matrix_shape = (num_rows,num_cols)
     A = np.zeros(A_matrix_shape)
-
+    print(num_matches)
     for i in range(num_matches):
         m = matches[i]
         (a_x, a_y) = f1[m.queryIdx].pt
@@ -115,22 +115,23 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
     #TODO-BLOCK-BEGIN
     #raise Exception("TODO in alignment.py not implemented")
     inlier_indices = []
+
     for i in range(nRANSAC):
         if (m == eTranslate):
-            sample = np.random.random_integers(0, len(f1)-1, 1)[0]
-            xDiff, yDiff = f2[sample].pt[0] - f1[sample].pt[0], f2[sample].pt[1] - f1[sample].pt[1]
-            matrix = np.eye(3)
-            matrix[0,2], matrix[1,2] = -xDiff, -yDiff
+            nSamples = 2
         elif (m == eHomography):
-            samples = np.random.random_integers(0, len(matches)-1, 4)
-            subMatches = [matches[pos] for pos in samples]
-            matrix = computeHomography(f1, f2, subMatches)
+            nSamples = 4
+
+        samples = np.random.random_integers(0, len(matches)-1, nSamples)
+        matrix = leastSquaresFit(f1, f2, matches, m, samples)
+
         temp_inlier = getInliers(f1, f2, matches, matrix, RANSACthresh)
         if len(temp_inlier) > len(inlier_indices):
+            print(temp_inlier)
             inlier_indices = temp_inlier
 
     M = leastSquaresFit(f1, f2, matches, m, inlier_indices)
-
+    print(M)
 
     #TODO-BLOCK-END
     #END TODO
@@ -222,8 +223,8 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
             t1_x, t1_y = f1[match.queryIdx].pt
             t2_x, t2_y = f2[match.queryIdx].pt
 
-            u += t2_x - t1_x # FIXME left or right???
-            v += t2_y - t1_y
+            u += (t2_x - t1_x)
+            v += (t2_y - t1_y)
 
             #TODO-BLOCK-END
             #END TODO
