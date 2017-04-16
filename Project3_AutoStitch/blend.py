@@ -90,6 +90,10 @@ def normalizeBlend(acc):
 
 
 def getAccSize(ipv):
+    """
+       INPUT:
+         ipv: list of input images and their relative positions in the mosaic
+    """
     # Compute bounding box for the mosaic
     minX = sys.maxint
     minY = sys.maxint
@@ -109,8 +113,15 @@ def getAccSize(ipv):
         # BEGIN TODO 9
         # add some code here to update minX, ..., maxY
         #TODO-BLOCK-BEGIN
-        minX, minY, maxX, maxY = imageBoundingBox(img, M)
-        #raise Exception("TODO in blend.py not implemented")
+        bound = imageBoundingBox(img, M)
+        #return int(minX), int(minY), int(maxX), int(maxY)
+
+        minX = min(minX, bound[0])
+        maxX = min(maxX, bound[2])
+
+        minY = min(minY, bound[1])
+        maxY = min(maxY, bound[3])
+
         #TODO-BLOCK-END
         # END TODO
 
