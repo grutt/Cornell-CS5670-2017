@@ -32,7 +32,7 @@ def computeHomography(f1, f2, matches, A_out=None):
     num_cols = 9
     A_matrix_shape = (num_rows,num_cols)
     A = np.zeros(A_matrix_shape)
-    print(num_matches)
+
     for i in range(num_matches):
         m = matches[i]
         (a_x, a_y) = f1[m.queryIdx].pt
@@ -115,7 +115,6 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
     #TODO-BLOCK-BEGIN
     #raise Exception("TODO in alignment.py not implemented")
     inlier_indices = []
-
     for i in range(nRANSAC):
         if (m == eTranslate):
             nSamples = 2
@@ -127,11 +126,9 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
 
         temp_inlier = getInliers(f1, f2, matches, matrix, RANSACthresh)
         if len(temp_inlier) > len(inlier_indices):
-            print(temp_inlier)
             inlier_indices = temp_inlier
 
     M = leastSquaresFit(f1, f2, matches, m, inlier_indices)
-    print(M)
 
     #TODO-BLOCK-END
     #END TODO
@@ -170,14 +167,13 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         match = matches[i]
         t1 = np.dot(M, np.append(f1[match.queryIdx].pt, 1))  # FIXME check if we need to normalize by z
         t1 = np.divide(t1, t1[2])
-        t2 = np.append(f2[match.queryIdx].pt, 1)
+        t2 = np.append(f2[match.trainIdx].pt, 1)
 
         dist = np.linalg.norm(t1-t2)  # euclidean dist
         if(dist < RANSACthresh):
             inlier_indices.append(i)
         #TODO-BLOCK-END
         #END TODO
-
     return inlier_indices
 
 def leastSquaresFit(f1, f2, matches, m, inlier_indices):
@@ -221,7 +217,7 @@ def leastSquaresFit(f1, f2, matches, m, inlier_indices):
             #TODO-BLOCK-BEGIN
             match = matches[i]
             t1_x, t1_y = f1[match.queryIdx].pt
-            t2_x, t2_y = f2[match.queryIdx].pt
+            t2_x, t2_y = f2[match.trainIdx].pt
 
             u += (t2_x - t1_x)
             v += (t2_y - t1_y)
