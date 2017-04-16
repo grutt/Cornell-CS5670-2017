@@ -67,6 +67,8 @@ def accumulateBlend(img, acc, M, blendWidth):
     # Fill in this routine
     #TODO-BLOCK-BEGIN
 
+
+
     #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
     # END TODO
@@ -83,7 +85,14 @@ def normalizeBlend(acc):
     # BEGIN TODO 11
     # fill in this routine..
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in blend.py not implemented")
+    img = acc[:, :, 0:3].copy()
+    for i in range(acc.shape[0]):
+        for j in range(acc.shape[1]):
+            if acc[i, j, 3] == 0:
+                img[i, j, :] = 0
+            else:
+                img[i, j, :] /= acc[i, j, 3]
+
     #TODO-BLOCK-END
     # END TODO
     return img

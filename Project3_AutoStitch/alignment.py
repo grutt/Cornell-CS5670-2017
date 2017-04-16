@@ -117,7 +117,7 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
     inlier_indices = []
     for i in range(nRANSAC):
         if (m == eTranslate):
-            nSamples = 2
+            nSamples = 1
         elif (m == eHomography):
             nSamples = 4
 
