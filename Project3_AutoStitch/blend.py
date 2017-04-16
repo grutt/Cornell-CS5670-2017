@@ -72,6 +72,7 @@ def accumulateBlend(img, acc, M, blendWidth):
        img, M, (acc.shape[1], acc.shape[0]), flags=cv2.INTER_LINEAR
     )
 
+
     acc += np.dstack((img, np.ones(img.shape[0:2])))
 
 
@@ -128,8 +129,7 @@ def getAccSize(ipv):
         # BEGIN TODO 9
         # add some code here to update minX, ..., maxY
         #TODO-BLOCK-BEGIN
-        M_inv = np.linalg.inv(M)
-        bound = imageBoundingBox(img, M_inv)
+        bound = imageBoundingBox(img, M)
         #return int(minX), int(minY), int(maxX), int(maxY)
 
         minX = min(minX, bound[0])
