@@ -92,7 +92,6 @@ def normalizeBlend(acc):
                 img[i, j, :] = 0
             else:
                 img[i, j, :] /= acc[i, j, 3]
-
     #TODO-BLOCK-END
     # END TODO
     return img
@@ -222,7 +221,9 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     # Note: warpPerspective does forward mapping which means A is an affine
     # transform that maps accumulator coordinates to final panorama coordinates
     #TODO-BLOCK-BEGIN
-    raise Exception("TODO in blend.py not implemented")
+    A = computeDrift(x_init, y_init, x_final, y_final, outputWidth)
+
+
     #TODO-BLOCK-END
     # END TODO
 
