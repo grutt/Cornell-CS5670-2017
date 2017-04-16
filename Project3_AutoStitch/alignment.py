@@ -153,7 +153,14 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         #by M, is within RANSACthresh of its match in f2.
         #If so, append i to inliers
         #TODO-BLOCK-BEGIN
-        raise Exception("TODO in alignment.py not implemented")
+        m = matches[i]
+        t1 = f1[m.queryIdx].pt * M  # FIXME check if we need to normalize by z
+        t2 = f2[m.queryIdx].pt
+
+        dist = np.linalg.norm(t1-t2)  # euclidean dist
+
+        if(dist < RANSACthresh):
+            inlier_indices.append(i)
         #TODO-BLOCK-END
         #END TODO
 
