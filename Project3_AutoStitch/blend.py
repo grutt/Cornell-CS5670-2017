@@ -66,7 +66,19 @@ def accumulateBlend(img, acc, M, blendWidth):
     # BEGIN TODO 10
     # Fill in this routine
     #TODO-BLOCK-BEGIN
+    M_inv = numpy.linalg.inv(M)
+    imageBoundingBox(img, M_inv)
+    for x in img.shape[0]:
+        for y in img.shape[1]:
+            transformed = np.dot(M_inv, np.array([x, y, 1]))
+            transformed = np.divide(transformed, transformed[2])
 
+
+    print(type(img))
+    print(img.shape)
+    print(type(acc))
+    print(acc.shape)
+    print(blendWidth)
     #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
     # END TODO
