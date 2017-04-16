@@ -74,9 +74,9 @@ def computeHomography(f1, f2, matches, A_out=None):
     c=0
     for i in range(3):
         for j in range(3):
-            H[i,j]= v[c,8]
+            H[i,j]= Vt[c,8]
             c+=1
-    H = H/v[8,8]
+    H = H/Vt[8,8]
 
     #TODO-BLOCK-END
     #END TODO
@@ -119,6 +119,7 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
     #least_squares_fit.
     #TODO-BLOCK-BEGIN
     #raise Exception("TODO in alignment.py not implemented")
+    inlier_indices = []
     for i in range(nRANSAC):
         if (m == eTranslate):
             sample = np.random.random_integers(0, len(f1)-1, 1)[0]
@@ -126,16 +127,15 @@ def alignPair(f1, f2, matches, m, nRANSAC, RANSACthresh):
             matrix = np.eye(3)
             matrix[0,2], matrix[1,2] = -xDiff, -yDiff
         elif (m == eHomography):
-            samples = np.random.random_integers(0, len(f1)-1, 4)
-            subF1, subF2 = [], []
+            samples = np.random.random_integers(0, len(matches)-1, 4)
+            subMatches = []
             for pos in samples:
-                subF1.append(f1[pos])
-                subF2.append(f2[pos])
-            matrix = computeHomography(subF1, subF2, matches)
+                subMatches.append(matches[pos])
+
+            matrix = computeHomography(f1, f2, subMatches)
         temp_inlier = getInliers(f1, f2, matches, matrix, RANSACthresh)
         if len(temp_inlier) > len(inlier_indices):
             inlier_indices = temp_inlier
-
     M = leastSquaresFit(f1, f2, matches, m, inlier_indices)
 
 
@@ -174,10 +174,19 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         #If so, append i to inliers
         #TODO-BLOCK-BEGIN
         match = matches[i]
-        t1 = f1[match.queryIdx].pt * M  # FIXME check if we need to normalize by z
+
+        f1[match.queryIdx].pt
+
+        t1 = np.ones(3)
+        t1[:2] = f1[match.queryIdx].pt
+
+        t1 = np.dot(M, t1)  # FIXME check if we need to normalize by z
+        t1 /= t1[2]
+
+
         t2 = f2[match.queryIdx].pt
 
-        dist = np.linalg.norm(t1-t2)  # euclidean dist
+        dist = np.linalg.norm(t1[:2]-t2)  # euclidean dist
 
         if(dist < RANSACthresh):
             inlier_indices.append(i)
