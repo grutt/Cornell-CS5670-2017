@@ -67,13 +67,27 @@ def accumulateBlend(img, acc, M, blendWidth):
     # Fill in this routine
     #TODO-BLOCK-BEGIN
 
-    M_inv = np.linalg.inv(M)
+
+    # compute the mask
+    distMask = np.zeros([img.shape[0], img.shape[1]], dtype=np.float_)
+    maskW, maskH = distMask.shape
+    for i in range(maskW):
+        for j in range(maskH):
+            distMask[i,j] = min(i,j,maskW-i-1, maskH-j-1)+1
+
+    distMask[distMask>blendWidth] = blendWidth
+    distMask /= blendWidth
+    img = img.astype(np.float_)
+    img[:,:,0] = np.multiply(img[:,:,0], distMask)
+    img[:,:,1] = np.multiply(img[:,:,1], distMask)
+    img[:,:,2] = np.multiply(img[:,:,2], distMask)
+
+    img = np.dstack((img, distMask))
+
     img = cv2.warpPerspective(
        img, M, (acc.shape[1], acc.shape[0]), flags=cv2.INTER_LINEAR
     )
-
-    mask = np.sum(img, axis=2) > 0
-    acc += np.dstack((img, mask))
+    acc += img
 
     #raise Exception("TODO in blend.py not implemented")
     #TODO-BLOCK-END
@@ -212,6 +226,7 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
         ipv, translation, blendWidth, accWidth, accHeight, channels
     )
 
+    compImage = normalizeBlend(acc)
 
     # Determine the final image width
     outputWidth = (accWidth - width) if is360 else accWidth
