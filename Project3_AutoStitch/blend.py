@@ -242,8 +242,13 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
     # Note: warpPerspective does forward mapping which means A is an affine
     # transform that maps accumulator coordinates to final panorama coordinates
     #TODO-BLOCK-BEGIN
+    #print(x_init, y_init, x_final, y_final)
+    #print(outputWidth)
     if(is360):
-        A = computeDrift(x_init, y_init, x_final, y_final, outputWidth)
+        A[0, 2] = 0.5 * width
+        M = computeDrift(x_init, y_init, x_final, y_final, width)
+        A = np.dot(M, A)
+        print(A)
 
 
     #TODO-BLOCK-END
