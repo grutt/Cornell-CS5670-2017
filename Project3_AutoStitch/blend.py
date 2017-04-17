@@ -248,7 +248,7 @@ def blendImages(ipv, blendWidth, is360=False, A_out=None):
         A[0, 2] = 0.5 * width
         M = computeDrift(x_init, y_init, x_final, y_final, width)
         A = np.dot(M, A)
-        print(A)
+        #print(A)
 
 
     #TODO-BLOCK-END
