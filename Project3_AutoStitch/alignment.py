@@ -165,7 +165,7 @@ def getInliers(f1, f2, matches, M, RANSACthresh):
         #If so, append i to inliers
         #TODO-BLOCK-BEGIN
         match = matches[i]
-        t1 = np.dot(M, np.append(f1[match.queryIdx].pt, 1))  # FIXME check if we need to normalize by z
+        t1 = np.dot(M, np.append(f1[match.queryIdx].pt, 1))
         t1 = np.divide(t1, t1[2])
         t2 = np.append(f2[match.trainIdx].pt, 1)
 

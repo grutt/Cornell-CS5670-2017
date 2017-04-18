@@ -266,8 +266,7 @@ class StitchingBaseFrame(AutostitchBaseFrame):
     def computeMapping(self, leftImage, rightImage):
         leftGrey = cv2.cvtColor(leftImage, cv2.COLOR_BGR2GRAY)
         rightGrey = cv2.cvtColor(rightImage, cv2.COLOR_BGR2GRAY)
-        orb = cv2.ORB_create() # TODO IMPORTANT CHANGE BACK
-        print("DONT FORGET TO FIXME [gui-line270]")
+        orb = cv2.ORB() # TODO IMPORTANT CHANGE BACK
         leftKeypoints, leftDescriptors = orb.detectAndCompute(leftGrey, None)
         rightKeypoints, rightDescriptors = orb.detectAndCompute(
             rightGrey, None

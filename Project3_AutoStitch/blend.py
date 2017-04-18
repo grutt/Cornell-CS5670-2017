@@ -113,7 +113,7 @@ def normalizeBlend(acc):
             else:
                 img[i, j, :] /= acc[i, j, 3]
 
-    img = img.astype(np.uint8) # FIXME ensure all < 255
+    img = img.astype(np.uint8)
     #TODO-BLOCK-END
     # END TODO
     return img
